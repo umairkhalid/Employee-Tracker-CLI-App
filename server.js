@@ -1,7 +1,7 @@
 // Import and require library modules
 const express = require('express');
-const mysql = require('mysql2');
-require('dotenv').config();
+const db = require('./config/connection');
+require("console.table");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -10,20 +10,25 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Connect to database
-const db = mysql.createConnection(
-  {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-  },
-  console.log(`Connected to the movies_db database.`)
-);
-
 // Query database
 db.query('SELECT * FROM department', function (err, results) {
     console.log(results);
+  });
+
+// Query database
+db.query('SELECT * FROM role', function (err, results) {
+    console.log(results);
+  });
+
+// Query database
+const sql = `
+SELECT department.id, department.department_name AS department, role.title
+FROM role
+LEFT JOIN department
+ON role.department_id = department.id
+ORDER BY department.id;`;
+db.query(sql, (err, results) => {
+    console.table(results);
   });
 
 // Default response for any other request (Not Found)
