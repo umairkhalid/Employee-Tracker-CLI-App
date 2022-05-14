@@ -1,14 +1,6 @@
 // Import and require library modules
-const express = require('express');
 const db = require('./config/connection');
-require("console.table");
-
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+require('console.table');
 
 // Query database
 db.query('SELECT * FROM department', function (err, results) {
@@ -22,20 +14,15 @@ db.query('SELECT * FROM role', function (err, results) {
 
 // Query database
 const sql = `
-SELECT department.id, department.department_name AS department, role.title
-FROM role
-LEFT JOIN department
-ON role.department_id = department.id
-ORDER BY department.id;`;
+SELECT a.id, a.first_name, a.last_name, role.title, role.department_name AS department, role.salary, concat(b.first_name,' ',b.last_name) AS manager 
+FROM employee a 
+LEFT JOIN employee b 
+ON a.manager_id = b.id 
+JOIN (SELECT role.id, role.title, role.salary, department.department_name 
+      FROM role JOIN department 
+      ON department.id = role.department_id) role 
+      ON role.id = a.role_id;`;
+
 db.query(sql, (err, results) => {
     console.table(results);
-  });
-
-// Default response for any other request (Not Found)
-app.use((req, res) => {
-  res.status(404).end();
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });

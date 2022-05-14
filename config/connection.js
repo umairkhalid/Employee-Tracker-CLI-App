@@ -10,6 +10,13 @@ const db = mysql.createConnection(
       database: process.env.DB_NAME
     },
     console.log(`Connected to the office_db database.`)
-  );
+);
+
+db.connect(err => {
+  if (err) {
+    console.error("error connecting: " + err.stack);
+    return;
+  }
+});
 
 module.exports = db;
