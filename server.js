@@ -70,7 +70,7 @@ const init = () => {
           viewDepartmentSalary();
       break;
       case 'Exit program':
-          db.end();
+          connection.end();
           console.log('\n Thanks for using Employee tracker App!! \n');
           return;
       default:
@@ -81,19 +81,19 @@ const init = () => {
 
 let viewAllDepartments = async () => {
   const departments = await db.getAllDepartments();
-      console.table('\n', departments, '\n');
+      console.table('\n', departments);
       init();
 };
 
 let viewAllRoles = async () => {
   const role = await db.getAllRoles();
-      console.table('\n', role, '\n');
+      console.table('\n', role);
       init();
 };
 
 let viewAllEmployees = async () => {
   const employees = await db.getAllEmployees();
-      console.table('\n', employees, '\n');
+      console.table('\n', employees);
       init();
 };
 
@@ -122,7 +122,8 @@ let viewAllEmployeesByManager = async () => {
   console.log(`\nTable: ${managerName}'s team`);
 
   // log view
-  console.table('\n', eObjects, '\n');
+  console.table('\n', eObjects);
+  init();
 
   // connection.query(`SELECT employee_id, first_name, last_name FROM employee ORDER BY employee_id ASC;`, (err, res) => {
   //     if (err) throw err;
@@ -146,21 +147,21 @@ let viewAllEmployeesByManager = async () => {
 }
 
 let addADepartment = async () => {
-  const department = await inquirer.prompt([
+  const department_name = await inquirer.prompt([
     {
-      name: 'newDept',
+      name: 'department_name',
       type: 'input',
       message: 'What is the name of the department you want to add?'   
     }
   ]);
-  await db.createDepartment(department);
-  console.log(`\n ${department} successfully added to database! \n`);
+  const resolve = await db.addDepartment(department_name);
+  console.log("\n" + resolve + "successfully added to database! \n");
   init();
 };
 
 let addARole = async () => {
   const departments = await db.getAllDepartments();
-  const departmentsList = departments.map(({ id, name }) => ({ name: name, value: id }));
+  const departmentsList = departments.map(({ id, title }) => ({ name: title, value: id }));
 
   const roleToAdd = await inquirer.prompt([
     {
@@ -174,7 +175,7 @@ let addARole = async () => {
       message: 'What is the salary of the role you want to add?'   
     },
     {
-      name: 'deptName',
+      name: 'department_id',
       type: 'list',
       message: 'Which department do you want to add the new role to?',
       choices: departmentsList
@@ -191,12 +192,12 @@ let addAnEmployee = async () => {
   
   const employeeToAdd = await inquirer.prompt([
     {
-      name: 'firstName',
+      name: 'first_Name',
       type: 'input',
       message: 'What is the new employee\'s first name?'
     },
     {
-      name: 'lastName',
+      name: 'last_Name',
       type: 'input',
       message: 'What is the new employee\'s last name?'
     },
@@ -212,7 +213,7 @@ let addAnEmployee = async () => {
     }
   );
 
-  const managerChoicesList = managerOptions.map(({ first_name, last_name, id }) => ({ name: first_name + last_name, value: id }));
+  const managerChoicesList = managerOptions.map(({ first_name, last_name, id }) => ({ name: first_name + ' ' + last_name, value: id }));
   if (managerChoicesList && managerChoicesList.length > 0)
   {
     const {managerId} = await inquirer.prompt(
@@ -228,7 +229,7 @@ let addAnEmployee = async () => {
   }
 
   employeeToAdd.role_id = roleId;
-  await db.createEmployee(employeeToAdd);
+  await db.addEmployee(employeeToAdd);
 
   init();
 
@@ -240,7 +241,7 @@ let updateEmployeeRole = async () => {
   const rolesOptions = await db.getAllRoles();
 
   const employeeOptionsToChooseFrom = employeeOptions.map(({ id, first_name, last_name }) => ({
-    name: first_name + last_name,
+    name: first_name + ' ' + last_name,
     value: id,
   }));
 
@@ -346,9 +347,9 @@ let updateEmployeesManager = async () => {
 };
 
 let removeADepartment = async () => {
-  const departmentOptions = await db.viewAllDepartments();
+  const departmentOptions = await db.getAllDepartments();
 
-  const departmentOptionsToChooseFrom = departmentOptions.map(({ id, name }) => ({ name: name, value: id }));
+  const departmentOptionsToChooseFrom = departmentOptions.map(e => ({name: e.department_name, value: e.id }));
 
   const { departmentId } = await inquirer.prompt([
     {
@@ -409,58 +410,96 @@ let removeARole = async () => {
 };
 
 let removeAnEmployee = async () => {
-  db.query(`SELECT * FROM employee ORDER BY employee_id ASC;`, (err, res) => {
-      if (err) throw err;
-      let employees = res.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.employee_id }));
-      inquirer.prompt([
-          {
-              name: 'employee',
-              type: 'rawlist',
-              message: 'Which employee would you like to remove?',
-              choices: employees
-          },
-      ]).then((response) => {
-          db.query(`DELETE FROM employee WHERE ?`, 
-          [
-              {
-                  employee_id: response.employee,
-              },
-          ], 
-          (err, res) => {
-              if (err) throw err;
-              console.log(`\n Successfully removed the employee from the database! \n`);
-              init();
-          })
-      })
-  })
+  const employeeOptions = await db.getAllEmployees();
+
+  const employeeChoicesList = employeeOptions.map(({ id, first_name, last_name }) => ({
+    name: first_name + ' ' + last_name,
+    value: id,
+  }));
+
+  const id =  await inquirer.prompt([
+    {
+        name: 'id',
+        type: 'list',
+        message: 'Which employee would you like to remove?',
+        choices: employeeChoicesList
+    },
+  ]);
+
+  await db.removeEmployee(id);
+  console.log('\n', id, 'has been removed!');
+  init();
+
+  // db.query(`SELECT * FROM employee ORDER BY employee_id ASC;`, (err, res) => {
+  //     if (err) throw err;
+  //     let employees = res.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.employee_id }));
+  //     inquirer.prompt([
+  //         {
+  //             name: 'employee',
+  //             type: 'rawlist',
+  //             message: 'Which employee would you like to remove?',
+  //             choices: employees
+  //         },
+  //     ]).then((response) => {
+  //         db.query(`DELETE FROM employee WHERE ?`, 
+  //         [
+  //             {
+  //                 employee_id: response.employee,
+  //             },
+  //         ], 
+  //         (err, res) => {
+  //             if (err) throw err;
+  //             console.log(`\n Successfully removed the employee from the database! \n`);
+  //             init();
+  //         })
+  //     })
+  // })
 }
 
 let viewDepartmentSalary = async () => {
-  db.query(`SELECT * FROM department ORDER BY department_id ASC;`, (err, res) => {
-      if (err) throw err;
-      let departments = res.map(department => ({name: department.department_name, value: department.department_id }));
-      inquirer.prompt([
-          {
-          name: 'deptName',
-          type: 'rawlist',
-          message: 'Which department would you like to view the total salaries of?',
-          choices: departments
-          },
-      ]).then((response) => {
-          db.query(`SELECT department_id, SUM(role.salary) AS total_salary FROM role WHERE ?`, 
-          [
-              {
-                  department_id: response.deptName,
-              },
-          ], 
-          (err, res) => {
-              if (err) throw err;
-              console.log(`\n The total utilized salary budget of the ${response.deptName} department is $ \n`);
-              console.table('\n', res, '\n');
-              init();
-          })
-      })
-  })
+  const departmentOptions = await db.getAllDepartments();
+
+  const departmentsList = departmentOptions.map(department => ({name: department.department_name, value: department.id }));
+
+  const { departmentName } = await inquirer.prompt([
+    {
+      name: 'departmentName',
+      type: 'list',
+      message: 'Which department would you like to view the total salaries of?',
+      choices: departmentsList
+    },
+  ]);
+
+  const budget = await db.getDepartmentSalary(departmentName);
+  console.log(`\n The total utilized salary budget of the this department is: \n`);
+  console.table(budget);
+  init();
+
+  // db.query(`SELECT * FROM department ORDER BY department_id ASC;`, (err, res) => {
+  //     if (err) throw err;
+  //     let departments = res.map(department => ({name: department.department_name, value: department.department_id }));
+  //     inquirer.prompt([
+  //         {
+  //         name: 'deptName',
+  //         type: 'rawlist',
+  //         message: 'Which department would you like to view the total salaries of?',
+  //         choices: departments
+  //         },
+  //     ]).then((response) => {
+  //         db.query(`SELECT department_id, SUM(role.salary) AS total_salary FROM role WHERE ?`, 
+  //         [
+  //             {
+  //                 department_id: response.deptName,
+  //             },
+  //         ], 
+  //         (err, res) => {
+  //             if (err) throw err;
+  //             console.log(`\n The total utilized salary budget of the ${response.deptName} department is $ \n`);
+  //             console.table('\n', res, '\n');
+  //             init();
+  //         })
+  //     })
+  // })
 }
 
 init();

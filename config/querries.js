@@ -60,8 +60,27 @@ class dbQuerry {
     return this.db.query(`SELECT * FROM department ORDER BY id ASC;`);
   }
 
-  createEmployee(employee) {
+  getDepartmentSalary(departmentId) {
+    return this.db.query(`
+    SELECT d.department_name AS 'department', SUM(salary) AS 'total utilized budget'            
+	FROM employee e
+	INNER JOIN role r
+	ON e.role_id = r.id
+	INNER JOIN department d
+	ON r.department_id = d.id
+	WHERE r.department_id = ?;`, departmentId);
+  }	
+
+  addEmployee(employee) {
     return this.db.query("INSERT INTO employee SET ?", employee);
+  }
+
+  addDepartment(department) {
+    return this.db.query("INSERT INTO department SET ?", department);
+  }
+
+  addRole(newRole) {
+    return this.db.query("INSERT INTO role SET ?", newRole);
   }
 
   updateEmployee() {
@@ -78,24 +97,16 @@ class dbQuerry {
     WHERE id = ?`, [manager_id, employee_id]);
   }
 
-  addRole(newRole) {
-    return this.db.query("INSERT INTO role SET ?", newRole);
-  }
-
-  createDepartment(department) {
-    return this.db.query("INSERT INTO department SET ?", department);
-  }
-
   updateEmployeeRole(employeeId, newRoleId) {
     console.log("inside query");
     return this.db.query("UPDATE employee SET role_id = ? WHERE id = ?", [newRoleId, employeeId]);
   }
 
   removeEmployee(id) {
-    return this.db.query("DELETE FROM employee WHERE id = ?", id);
+    return this.db.query("DELETE FROM employee WHERE ?", id);
   }
   removeRole(id) {
-    return this.db.query("DELETE FROM role WHERE id = ?", id);
+    return this.db.query("DELETE FROM role WHERE ?", id);
   }
   removeDepartment(id) {
     return this.db.query("DELETE FROM department WHERE id = ?", id);
