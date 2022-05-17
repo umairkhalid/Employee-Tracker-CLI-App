@@ -45,7 +45,7 @@ The following video shows an example of the application being used from the comm
 
 (PLEASE CLICK ON FOLLOWING GIF!!)
 
-[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./utils/emp_tracker.gif)](https://2u-20.wistia.com/medias/2lnle7xnpk)
+[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./utils/emp_tracker.gif)](https://tyfoniacrage-x-au.wistia.com/medias/5e7e197jmx)
 
 ## NPM Packages
 
