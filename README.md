@@ -41,9 +41,11 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ## Walkthrough Video
 
-The following video shows an example of the application being used from the command line:
+The following video shows an example of the application being used from the command line: 
 
-[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./Assets/12-sql-homework-video-thumbnail.png)](https://2u-20.wistia.com/medias/2lnle7xnpk)
+(PLEASE CLICK ON FOLLOWING GIF!!)
+
+[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./utils/emp_tracker.gif)](https://2u-20.wistia.com/medias/2lnle7xnpk)
 
 ## NPM Packages
 
