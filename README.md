@@ -1,10 +1,13 @@
 # Employee Tracker CLI App
 
+![HTML](https://img.shields.io/badge/-NODE-darkgreen) ![JS](https://img.shields.io/badge/-JS-yellow) ![Node](https://img.shields.io/badge/-MySQL-brightgreen)
+![JEST](https://img.shields.io/badge/-SQL-darkred) ![Inquirer](https://img.shields.io/badge/-Inquirer-pink)
+
+![Github licence](https://img.shields.io/badge/license-MIT-blue)
+
 ## Description
 
-Developers frequently have to create interfaces that allow non-developers to easily view and interact with information stored in databases. These interfaces are called **content management systems (CMS)**. Your assignment this week is to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL.
-
-Because this application won’t be deployed, you’ll also need to create a walkthrough video that demonstrates its functionality and all of the following acceptance criteria being met. You’ll need to submit a link to the video and add it to the README of your project.
+This is a command-line application which allows a user to manage a database of employees within a company, using Node.js, Inquirer, and MySQL. The application connects to a database designed in MySQL which contains data for departments, roles, and employees within the company. This Content Management System allows a user to add, view, modify and delete employees' data information from company's database.
 
 ## User Story
 
@@ -36,7 +39,7 @@ WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
 ```
 
-## Mock-Up
+## Walkthrough Video
 
 The following video shows an example of the application being used from the command line:
 
@@ -44,13 +47,13 @@ The following video shows an example of the application being used from the comm
 
 ## NPM Packages
 
-* This application:
+* Following NPM packages are used in this application:
 
-    * Uses the [Inquirer package](https://www.npmjs.com/package/inquirer).
+    * [Inquirer package](https://www.npmjs.com/package/inquirer).
 
-    * Uses the [MySQL2 package](https://www.npmjs.com/package/mysql2) to connect to a MySQL database.
+    * [MySQL2 package](https://www.npmjs.com/package/mysql2) to connect to a MySQL database.
 
-    * Uses the [console.table package](https://www.npmjs.com/package/console.table) to print MySQL rows to the console.
+    * [console.table package](https://www.npmjs.com/package/console.table) to print MySQL rows to the console.
 
 - - -
 © 2022 Umair Khalid. Confidential and Proprietary. All Rights Reserved.
