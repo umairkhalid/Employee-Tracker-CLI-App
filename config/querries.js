@@ -48,11 +48,11 @@ class dbQuerry {
   //Role. (get, add)
   getAllRoles() {
     return this.db.query(`
-    SELECT role.id, role.title, role.salary, department.department_name, department.id 
-    FROM role 
-    JOIN department 
-    ON role.department_id = department.id 
-    ORDER BY role.id ASC;`);
+    SELECT r.id, r.title, d.department_name AS department, r.salary
+    FROM role r
+    INNER JOIN department d
+	ON r.department_id = d.id
+	ORDER BY r.id;`);
   }
 
   //Department (get, add)
@@ -91,10 +91,7 @@ class dbQuerry {
   }
 
   updateEmployeeManager(manager_id, employee_id) {
-    return this.db.query(`
-    UPDATE employee
-	SET manager_id = ? 
-    WHERE id = ?`, [manager_id, employee_id]);
+    return this.db.query(`UPDATE employee SET manager_id = ? WHERE id = ?`, [manager_id, employee_id]);
   }
 
   updateEmployeeRole(employeeId, newRoleId) {
