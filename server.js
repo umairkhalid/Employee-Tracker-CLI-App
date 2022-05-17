@@ -79,7 +79,7 @@ const init = () => {
   })
 }
 
-// function to print all employees in the database
+// function to print all departments in the database
 const viewAllDepartments = async () => {
   try {
     const departments = await db.getAllDepartments();
@@ -91,6 +91,7 @@ const viewAllDepartments = async () => {
   }
 };
 
+// function to print all roles in the database
 const viewAllRoles = async () => {
   try {
     const role = await db.getAllRoles();
@@ -102,6 +103,7 @@ const viewAllRoles = async () => {
   }
 };
 
+// function to print all employees in the database
 const viewAllEmployees = async () => {
   try {
     const employees = await db.getAllEmployees();
@@ -113,11 +115,12 @@ const viewAllEmployees = async () => {
   }
 };
 
+// function to print all employees by their manager
 const viewAllEmployeesByManager = async () => {
   try {
-    const mObjects = await db.getAllManagers();
+    const managerOptions = await db.getAllManagers();
     // map manager names
-    const mNames = mObjects.map((m) => m.first_name + ' ' + m.last_name);
+    const managerChoicesList = managerOptions.map((m) => m.first_name + ' ' + m.last_name);
   
     //* inquirer	> ask the user to choose the manager for which to print the employees
     const { managerName } = await inquirer.prompt([
@@ -125,21 +128,21 @@ const viewAllEmployeesByManager = async () => {
       name: 'managerName',
       type: 'list',
       message: 'Which manager would you like to see the employee\'s of?',
-      choices: mNames   
+      choices: managerChoicesList   
       },
     ]);
     
     // find manager object with manager name
-    const { id: managerId } = mObjects.find((m) => m.first_name + ' ' + m.last_name === managerName);
+    const { id: managerId } = managerOptions.find((m) => m.first_name + ' ' + m.last_name === managerName);
   
     //* mysql 	> get the employees with that specific manager from the database
-    const eObjects = await db.getEmployeesByManager(managerId);
+    const employeeList = await db.getEmployeesByManager(managerId);
   
     // log view title
     console.log(`\n ${managerName}'s team \n`);
   
     // log view
-    console.table(eObjects);
+    console.table(employeeList);
     init();  
   } catch (err) {
     // error handling
@@ -147,6 +150,7 @@ const viewAllEmployeesByManager = async () => {
   }
 }
 
+// function to add a department in the database
 const addADepartment = async () => {
   try {
     const department_name = await inquirer.prompt([
@@ -165,6 +169,7 @@ const addADepartment = async () => {
   }
 };
 
+// function to add a role in the database
 const addARole = async () => {
   try {
     const departments = await db.getAllDepartments();
@@ -201,6 +206,7 @@ const addARole = async () => {
   }
 };
 
+// function to add a new employee in the database
 const addAnEmployee = async () => {
   try {
     const rolesOptions = await db.getAllRoles();
@@ -256,7 +262,7 @@ const addAnEmployee = async () => {
     console.error(err);
   }
 };
-
+// function to update an employee's record
 const updateEmployeeRole = async () => {
   try {
     const employeeOptions = await db.getAllEmployees();
@@ -301,6 +307,7 @@ const updateEmployeeRole = async () => {
   }
 };
 
+// function to update an employee's manager
 const updateEmployeesManager = async () => {
   try {
     const employeeOptions = await db.getAllEmployees();
@@ -347,6 +354,7 @@ const updateEmployeesManager = async () => {
   }
 };
 
+// function to remove a department from the database
 const removeADepartment = async () => {
   try {
     const departmentOptions = await db.getAllDepartments();
@@ -371,6 +379,7 @@ const removeADepartment = async () => {
   }  
 };
 
+// function to remove a role from the database
 const removeARole = async () => {
   try {
     const rolesOptions = await db.getAllRoles();
@@ -398,6 +407,7 @@ const removeARole = async () => {
   }
 };
 
+// function to remove an employee from the database
 const removeAnEmployee = async () => {
   try {
     const employeeOptions = await db.getAllEmployees();
@@ -424,6 +434,7 @@ const removeAnEmployee = async () => {
   }
 };
 
+// function to print total combined salary of the specific department
 const viewDepartmentSalary = async () => {
   try {
     const departmentOptions = await db.getAllDepartments();
