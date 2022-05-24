@@ -43,7 +43,9 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 The following video shows an example of the application being used from the command line: 
 
-(PLEASE CLICK ON FOLLOWING GIF!!)
+(PLEASE CLICK ON FOLLOWING LINK!!)
+
+https://tyfoniacrage-x-au.wistia.com/medias/5e7e197jmx
 
 [![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./utils/emp_tracker.gif)](https://tyfoniacrage-x-au.wistia.com/medias/5e7e197jmx)
 
